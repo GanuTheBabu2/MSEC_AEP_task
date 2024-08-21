@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            background-color: antiquewhite;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: lightblue;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+        footer {
+            background-color: lightblue;
+            color: black; 
+            text-align: center;
+            padding: 8px 0;
+            bottom: 0%;
+            width: 100%;
+        }
+        .container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .tasks {
+            background-color: antiquewhite;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Student Dashboard</h1>
+    </header>
+    <div class="container">
+        <h2>Your Assigned Tasks</h2>
+        <ul id="task-list">
+            <!-- List of tasks will be dynamically populated here -->
+        </ul>
+    </div>
+    <footer>
+        <p>&copy; 2024 Task Management System</p>
+    </footer>
+
+    <script>
+        // Retrieve and display tasks for the logged-in student
+        const loggedInEmail = localStorage.getItem('loggedInStudent');
+        const tasks = JSON.parse(localStorage.getItem(loggedInEmail)) || [];
+        const taskList = document.getElementById('task-list');
+
+        if (tasks.length === 0) {
+            taskList.innerHTML = '<li>No tasks assigned yet.</li>';
+        } else {
+            tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                listItem.textContent = task;
+                taskList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
