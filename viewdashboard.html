@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Dashboard</title>
+    <style>
+        body {
+            background-color: antiquewhite;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: lightblue;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+        footer {
+            background-color: lightblue;
+            color: black;
+            text-align: center;
+            padding: 8px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: antiquewhite;
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: lightblue;
+        }
+        .verify-btn {
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .verify-btn:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Task Dashboard</h1>
+    </header>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Email</th>
+                    <th>Task Description</th>
+                    <th>Attached Image</th>
+                    <th>Status</th>
+                    <th>Verify & Close Task</th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+                <!-- Task list will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        <p>&copy; 2024 Task Management System</p>
+    </footer>
+
+    <script>
+        function loadTasks() {
+            const taskList = document.getElementById('taskList');
+            const assignedTasks = JSON.parse(localStorage.getItem('assignedTasks')) || [];
+
+            taskList.innerHTML = '';
+            assignedTasks.forEach((task, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${task.studentEmail}</td>
+                    <td>${task.description}</td>
+                    <td>${task.image ? `<img src="${task.image}" alt="Task Image" style="max-width: 100px;">` : 'No Image'}</td>
+                    <td>${task.verified ? 'Completed' : task.status}</td>
+                    <td>
+                        ${!task.verified && task.status === 'Pending' ? `<button class="verify-btn" onclick="verifyTask(${index})">Verify & Close</button>` : ''}
+                    </td>
+                `;
+                taskList.appendChild(row);
+            });
+        }
+
+        function verifyTask(index) {
+            const assignedTasks = JSON.parse(localStorage.getItem('assignedTasks')) || [];
+            assignedTasks[index].verified = true;
+            assignedTasks[index].status = 'Completed';
+            localStorage.setItem('assignedTasks', JSON.stringify(assignedTasks));
+            loadTasks();
+        }
+
+        window.onload = loadTasks;
+    </script>
+</body>
+</html>

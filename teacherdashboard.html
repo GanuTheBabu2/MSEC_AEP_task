@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <style>
+        body {
+            background-color: antiquewhite;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: lightblue;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+        footer {
+            background-color: lightblue;
+            color: black; 
+            text-align: center;
+            padding: 8px 0;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: antiquewhite;
+            border-radius: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: lightblue;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .form-section input, .form-section button {
+            margin: 10px 5px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-section input {
+            width: 250px;
+            border: 1px solid #ccc;
+        }
+        .form-section button {
+            background-color: darkblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-section button:hover {
+            background-color: darkcyan;
+        }
+        .edit-btn {
+            background-color: darkorange;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .edit-btn:hover {
+            background-color: orangered;
+        }
+        .view-ics-btn {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .view-ics-btn:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Teacher Dashboard</h1>
+    </header>
+    <div class="container">
+        <div class="form-section">
+            <h2>Add/Edit Student CGPA</h2>
+            <input type="text" id="studentName" placeholder="Student Name">
+            <input type="text" id="studentCGPA" placeholder="CGPA">
+            <input type="email" id="studentEmail" placeholder="Student Email">
+            <button onclick="addStudent()">Add/Update Student</button>
+        </div>
+        <h2>Student List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Student ID</th>
+                    <th>Email</th>
+                    <th>CGPA</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            <tbody id="student-list">
+                <!-- List of students will be dynamically populated here -->
+            </tbody>
+        </table>
+
+        <a href="ics-students.html" class="view-ics-btn" onclick="saveTopICS()">View ICS Students (Top 10)</a>
+    </div>
+    <footer>
+        <p>&copy; 2024 Task Management System</p>
+    </footer>
+
+    <script>
+        // Sample data storage
+        let students = [];
+
+        // Function to add or edit a student
+        function addStudent() {
+    const name = document.getElementById('studentName').value;
+    const cgpa = parseFloat(document.getElementById('studentCGPA').value);
+    const email = document.getElementById('studentEmail').value;
+
+    if (name && !isNaN(cgpa) && email) {
+        const existingStudent = students.find(student => student.name === name);
+        if (existingStudent) {
+            existingStudent.cgpa = cgpa; // Update existing student's CGPA
+            existingStudent.email = email; // Update existing student's email
+        } else {
+            students.push({ name: name, id: generateID(), cgpa: cgpa, email: email });
+        }
+        renderStudentList();
+        clearForm();
+    } else {
+        alert('Please enter a valid student name, CGPA, and email.');
+    }
+}
+
+        // Function to generate a simple student ID
+        function generateID() {
+            return 'S' + (students.length + 1).toString().padStart(3, '0');
+        }
+
+        function renderStudentList() {
+    const studentList = document.getElementById('student-list');
+    studentList.innerHTML = '';
+    students.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.id}</td>
+            <td>${student.cgpa.toFixed(2)}</td>
+            <td>${student.email}</td>
+            <td><button class="edit-btn" onclick="editStudent(${index})">Edit</button></td>
+        `;
+        studentList.appendChild(row);
+    });
+}
+
+        // Function to edit a student's details
+        function editStudent(index) {
+    const student = students[index];
+    document.getElementById('studentName').value = student.name;
+    document.getElementById('studentCGPA').value = student.cgpa.toFixed(2);
+    document.getElementById('studentEmail').value = student.email;
+}
+        // Function to clear the input form
+        function clearForm() {
+    document.getElementById('studentName').value = '';
+    document.getElementById('studentCGPA').value = '';
+    document.getElementById('studentEmail').value = '';
+}
+        // Function to view the top 10 ICS students by CGPA
+        function viewTopICS() {
+            const topStudents = [...students].sort((a, b) => b.cgpa - a.cgpa).slice(0, 10);
+            alert('Top 10 ICS Students:\n' + topStudents.map(s => `${s.name} - CGPA: ${s.cgpa.toFixed(2)}`).join('\n'));
+        }
+    function saveTopICS() {
+        const topStudents = [...students].sort((a, b) => b.cgpa - a.cgpa).slice(0, 10);
+        localStorage.setItem('topICSStudents', JSON.stringify(topStudents));
+    }
+    </script>
+</body>
+</html>

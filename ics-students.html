@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Tasks</title>
+    <style>
+        body {
+            background-color: antiquewhite;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: lightblue;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
+        }
+        footer {
+            background-color: lightblue;
+            color: black;
+            text-align: center;
+            padding: 8px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: antiquewhite;
+            border-radius: 10px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .form-section input, .form-section textarea, .form-section button {
+            margin: 10px 5px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-section input, .form-section textarea {
+            width: 250px;
+            border: 1px solid #ccc;
+        }
+        .form-section button {
+            background-color: darkblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-section button:hover {
+            background-color: darkcyan;
+        }
+        .dashboard-btn {
+            background-color: darkblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .dashboard-btn:hover {
+            background-color: darkcyan;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Assign Tasks to Top 10 Students</h1>
+    </header>
+    <div class="container">
+        <form id="taskForm">
+            <div class="form-section">
+                <h2>Select Student:</h2>
+                <select id="studentSelect">
+                    <!-- Dynamically filled with top 10 students -->
+                </select>
+            </div>
+            <div class="form-section">
+                <h2>Task Description:</h2>
+                <textarea id="taskDescription" placeholder="Enter the task details"></textarea>
+            </div>
+            <div class="form-section">
+                <h2>Attach an Image (Optional):</h2>
+                <input type="file" id="taskImage" accept="image/*">
+            </div>
+            <div class="form-section">
+                <button type="button" onclick="assignTask()">Assign Task</button>
+                <button class="dashboard-btn" onclick="viewTaskDashboard()">View Task Dashboard</button>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2024 Task Management System</p>
+    </footer>
+
+    <script>
+        const topICSStudents = JSON.parse(localStorage.getItem('topICSStudents')) || [];
+
+        function loadStudentOptions() {
+            const studentSelect = document.getElementById('studentSelect');
+            topICSStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.email;
+                option.textContent = `${student.name} - ${student.email}`;
+                studentSelect.appendChild(option);
+            });
+        }
+
+        function assignTask() {
+            const studentEmail = document.getElementById('studentSelect').value;
+            const taskDescription = document.getElementById('taskDescription').value;
+            const taskImage = document.getElementById('taskImage').files[0];
+            
+            if (taskDescription) {
+                const assignedTasks = JSON.parse(localStorage.getItem('assignedTasks')) || [];
+                const task = {
+                    studentEmail,
+                    description: taskDescription,
+                    image: taskImage ? URL.createObjectURL(taskImage) : null,
+                    status: 'Pending',
+                    verified: false
+                };
+                assignedTasks.push(task);
+                localStorage.setItem('assignedTasks', JSON.stringify(assignedTasks));
+                alert('Task assigned successfully!');
+                document.getElementById('taskForm').reset();
+            } else {
+                alert('Please enter task details.');
+            }
+        }
+
+        window.onload = loadStudentOptions;
+        function viewTaskDashboard() {
+            window.location.href = 'C:\Users\seysa\Desktop\demo\viewdashboard.html'; // Replace with the correct path if needed
+        }
+    </script>
+</body>
+</html>
