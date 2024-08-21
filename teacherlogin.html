@@ -25,19 +25,20 @@
             bottom: 0%;
             width: 100%;
         }
-        .msec{
+            .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-top: 50px; 
-        }
-        .container {
-            text-align: center;
-            margin-top: 40px; 
-        }
-        .login-form {
-            background-color: antiquewhite; 
-            padding: 20px;
-            border-radius: 30px;
-            display: inline-block;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        } 
+            .login-form {
+            background-color: lightblue;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         input[type="text"], input[type="password"] {
             width: 100%;
@@ -64,10 +65,9 @@
         <img src="1000052574-removebg-preview.png">
     </div>
 </header>
-     <h1 class="msec">ICS STUDENTS</h1>
 <div class="container">
     <div class="login-form">
-        <h2>ADMIN LOGIN</h2>
+        <h2>TEACHER LOGIN</h2>
         <form action="teacherdashboard.html" method="POST"> 
             <input type="text" name="username" placeholder="Gmail" required><br>
             <input type="password" name="password" placeholder="Password" required><br>

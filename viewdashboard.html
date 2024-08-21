@@ -47,16 +47,28 @@
         th {
             background-color: lightblue;
         }
-        .verify-btn {
-            background-color: green;
-            color: white;
+        .verify-btn, .close-btn {
             padding: 5px 10px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
+            color: white;
+        }
+        .verify-btn {
+            background-color: green;
         }
         .verify-btn:hover {
             background-color: darkgreen;
+        }
+        .close-btn {
+            background-color: red;
+        }
+        .close-btn:hover {
+            background-color: darkred;
+        }
+        img {
+            max-width: 100px;
+            height: auto;
         }
     </style>
 </head>
@@ -72,7 +84,8 @@
                     <th>Task Description</th>
                     <th>Attached Image</th>
                     <th>Status</th>
-                    <th>Verify & Close Task</th>
+                    <th>Verify Task</th>
+                    <th>Close Task</th>
                 </tr>
             </thead>
             <tbody id="taskList">
@@ -83,7 +96,6 @@
     <footer>
         <p>&copy; 2024 Task Management System</p>
     </footer>
-
     <script>
         function loadTasks() {
             const taskList = document.getElementById('taskList');
@@ -95,10 +107,13 @@
                 row.innerHTML = `
                     <td>${task.studentEmail}</td>
                     <td>${task.description}</td>
-                    <td>${task.image ? `<img src="${task.image}" alt="Task Image" style="max-width: 100px;">` : 'No Image'}</td>
-                    <td>${task.verified ? 'Completed' : task.status}</td>
+                    <td>${task.image ? `<img src="${task.image}" alt="Task Image">` : 'No Image'}</td>
+                    <td>${task.status}</td>
                     <td>
-                        ${!task.verified && task.status === 'Pending' ? `<button class="verify-btn" onclick="verifyTask(${index})">Verify & Close</button>` : ''}
+                        ${!task.verified ? `<button class="verify-btn" onclick="verifyTask(${index})">Verify</button>` : 'Verified'}
+                    </td>
+                    <td>
+                        ${task.verified && task.status !== 'Completed' ? `<button class="close-btn" onclick="closeTask(${index})">Close</button>` : ''}
                     </td>
                 `;
                 taskList.appendChild(row);
@@ -108,6 +123,12 @@
         function verifyTask(index) {
             const assignedTasks = JSON.parse(localStorage.getItem('assignedTasks')) || [];
             assignedTasks[index].verified = true;
+            localStorage.setItem('assignedTasks', JSON.stringify(assignedTasks));
+            loadTasks();
+        }
+
+        function closeTask(index) {
+            const assignedTasks = JSON.parse(localStorage.getItem('assignedTasks')) || [];
             assignedTasks[index].status = 'Completed';
             localStorage.setItem('assignedTasks', JSON.stringify(assignedTasks));
             loadTasks();
